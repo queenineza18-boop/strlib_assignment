@@ -3,8 +3,8 @@
  *  Assignment: Your Own String Library
  *  Course:     Programming with C
  *
- *  Name:       [YOUR NAME]
- *  Student ID: [YOUR ID]
+ *  Name:       [Queen Ineza]
+ *  Student ID: [29354]
  * ============================================================================
  *
  *  HOW TO COMPILE AND RUN
@@ -86,10 +86,15 @@
  */
 const char *str_find_char(const char *s, char c)
 {
-    (void)s;   /* remove these (void) lines once you use the parameters */
-    (void)c;
-
-    /* TODO */
+    while (*s != '\0') {
+        if (*s == c) {
+            return s;
+        }
+        s++;
+    }
+    if (c == '\0') {
+        return s;
+    }
     return NULL;
 }
 
@@ -117,9 +122,23 @@ const char *str_find_char(const char *s, char c)
  */
 void str_reverse(char *s)
 {
-    (void)s;
-
-    /* TODO */
+     if (s == NULL) return;
+    
+    char *end = s;
+    while (*end != '\0') {
+        end++;
+    }
+    if (end > s) {
+        end--;
+    }
+    
+    while (s < end) {
+        char temp = *s;
+        *s = *end;
+        *end = temp;
+        s++;
+        end--;
+    }
 }
 
 
@@ -149,10 +168,29 @@ void str_reverse(char *s)
  */
 int str_compare_ci(const char *a, const char *b)
 {
-    (void)a;
-    (void)b;
-
-    /* TODO */
+      while (*a != '\0' && *b != '\0') {
+        char ca = *a;
+        char cb = *b;
+        
+        // Convert to lowercase if uppercase
+        if (ca >= 'A' && ca <= 'Z') ca += 32;
+        if (cb >= 'A' && cb <= 'Z') cb += 32;
+        
+        if (ca < cb) return -1;
+        if (ca > cb) return 1;
+        
+        a++;
+        b++;
+    }
+    
+    char ca = *a;
+    char cb = *b;
+    if (ca >= 'A' && ca <= 'Z') ca += 32;
+    if (cb >= 'A' && cb <= 'Z') cb += 32;
+    
+    if (ca < cb) return -1;
+    if (ca > cb) return 1;
+    
     return 0;
 }
 
@@ -187,11 +225,23 @@ int str_compare_ci(const char *a, const char *b)
  */
 size_t str_copy_bounded(char *dst, const char *src, size_t size)
 {
-    (void)dst;
-    (void)src;
-    (void)size;
+    size_t src_len = 0;
+    while (src[src_len] != '\0') {
+        src_len++;
+    }
 
-    /* TODO */
+    if (size == 0) {
+        return src_len;
+    }
+
+    size_t i = 0;
+    while (i < size - 1 && src[i] != '\0') {
+        dst[i] = src[i];
+        i++;
+    }
+    dst[i] = '\0';
+
+    return src_len;
     return 0;
 }
 
@@ -223,10 +273,21 @@ size_t str_copy_bounded(char *dst, const char *src, size_t size)
  */
 const char *str_find_sub(const char *hay, const char *needle)
 {
-    (void)hay;
-    (void)needle;
-
-    /* TODO */
+    if (*needle == '\0') {
+        return hay;
+    }
+    while (*hay != '\0') {
+        const char *h = hay;
+        const char *n = needle;
+        while (*h != '\0' && *n != '\0' && *h == *n) {
+            h++;
+            n++;
+        }
+        if (*n == '\0') {
+            return hay;
+        }
+        hay++;
+    }
     return NULL;
 }
 
@@ -258,9 +319,35 @@ const char *str_find_sub(const char *hay, const char *needle)
  */
 size_t str_squeeze(char *s)
 {
-    (void)s;
+     if (s == NULL || *s == '\0') {
+        return 0;
+    }
 
-    /* TODO */
+    char *read = s;
+    char *write = s;
+
+    // Skip leading spaces and tabs
+    while (*read == ' ' || *read == '\t') {
+        read++;
+    }
+
+    int in_space_run = 0;
+
+    while (*read != '\0') {
+        if (*read == ' ' || *read == '\t') {
+            in_space_run = 1;
+            read++;
+        } else {
+            if (in_space_run) {
+                *write++ = ' ';
+                in_space_run = 0;
+            }
+            *write++ = *read++;
+        }
+    }
+
+    *write = '\0';
+    return (size_t)(write - s);
     return 0;
 }
 
@@ -296,12 +383,32 @@ size_t str_squeeze(char *s)
  */
 int str_split(char *s, char delim, char *fields[], int max_fields)
 {
-    (void)s;
-    (void)delim;
-    (void)fields;
-    (void)max_fields;
+     if (s == NULL) {
+        return 0;
+    }
 
-    /* TODO */
+    int field_count = 0;
+    char *p = s;
+
+    if (field_count < max_fields) {
+        fields[field_count] = p;
+    }
+    field_count++;
+
+    while (*p != '\0') {
+        if (*p == delim) {
+            *p = '\0';
+            p++;
+            if (field_count < max_fields) {
+                fields[field_count] = p;
+            }
+            field_count++;
+        } else {
+            p++;
+        }
+    }
+
+    return field_count;
     return 0;
 }
 
